@@ -52,7 +52,18 @@ class Lexer
                     i += 1
                 end
 
-                tokens.append(Token.new(TokenType::IDENT, word))
+                if ! keyword?(word)
+                    tokens.append(Token.new(TokenType::IDENT, word))
+                else
+                    tokens.append(Token.new({
+                        "sort" => TokenType::SORT,
+                        "asc" => TokenType::ASC,
+                        "desc" => TokenType::DESC,
+                        "contains" => TokenType::CONTAINS,
+                        "pluck" => TokenType::PLUCK,
+                        "open" => TokenType::OPEN,
+                    }[word], word))
+                end
             elsif numeric?(char)
                 number = char
 
@@ -66,6 +77,10 @@ class Lexer
                 end
 
                 tokens.append(Token.new(TokenType::NUMBER, number))
+            elsif char == '|'
+                tokens.append(Token.new(TokenType::PIPE, '|'))
+            elsif char == ','
+                tokens.append(Token.new(TokenType::COMMA, ','))
             else
                 raise UnrecognisedTokenError.new("Unrecognised character #{char}.")
             end
