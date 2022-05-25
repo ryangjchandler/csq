@@ -1,13 +1,20 @@
 require_relative 'lexer'
+require_relative 'parser'
 require 'readline'
 
 def main()
     puts "csq v0.1.0"
 
     lexer = Lexer.new
+    parser = Parser.new
 
     while buf = Readline.readline(">> ")
-        p lexer.tokenize(buf)
+        tokens = lexer.tokenize(buf)
+        p tokens
+        
+        ast = parser.parse(tokens)
+
+        p ast
     end
 end
 
