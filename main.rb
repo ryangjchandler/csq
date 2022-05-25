@@ -10,10 +10,7 @@ def main()
 
     while buf = Readline.readline(">> ")
         tokens = lexer.tokenize(buf)
-        p tokens
-        
         ast = parser.parse(tokens)
-
         p ast
     end
 end

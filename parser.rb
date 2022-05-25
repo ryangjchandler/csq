@@ -44,6 +44,13 @@ class Parser
                 end
 
                 ast.append(SortNode.new(column, order))
+            elsif token.type == TokenType::OPEN
+                file = tokens[i]
+
+                expect?(TokenType::STRING, file)
+                i += 1
+
+                ast.append(OpenNode.new(file.literal))
             end
         end
 

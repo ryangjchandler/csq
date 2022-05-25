@@ -6,6 +6,9 @@ end
 class InvalidNumericRepresentation < StandardError
 end
 
+class UnterminatedStringError < StandardError
+end
+
 module TokenType
     IDENT = 'IDENT'
     SORT = 'SORT'
@@ -81,6 +84,31 @@ class Lexer
                 tokens.append(Token.new(TokenType::PIPE, '|'))
             elsif char == ','
                 tokens.append(Token.new(TokenType::COMMA, ','))
+            elsif char == "\""
+                str = ""
+                escaping = false
+
+                loop do
+                    c = chars[i]
+                    i += 1
+
+                    if c == "\"" && escaping == false
+                        break
+                    end
+
+                    if c == nil
+                        raise UnterminatedStringError.new("Unterminated string.")
+                    end
+
+                    if c == "\\"
+                        escaping = true
+                    else
+                        str += c
+                        escaping = false
+                    end
+                end
+
+                tokens.append(Token.new(TokenType::STRING, str))
             else
                 raise UnrecognisedTokenError.new("Unrecognised character #{char}.")
             end
